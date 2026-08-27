@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { HeroCaddy } from "@/components/caddy/HeroCaddy";
 import { SiteNav } from "@/components/caddy/SiteNav";
-import { SpecializationPills } from "@/components/caddy/SpecializationPills";
+import { SpecialtyFinder } from "@/components/caddy/SpecialtyFinder";
+import { PatientReviews } from "@/components/caddy/PatientReviews";
 import { DoctorCarousel } from "@/components/caddy/DoctorCarousel";
 import { QueueTeaser } from "@/components/caddy/QueueTeaser";
 import { SiteFooter } from "@/components/caddy/SiteFooter";
@@ -132,17 +133,8 @@ function Home() {
 
 
         {/* SPECIALIZATIONS */}
-        <section className="pt-14">
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={spring}
-            className="mb-5 text-center text-2xl font-extrabold"
-          >
-            What do you need today?
-          </motion.h2>
-          <SpecializationPills />
+        <section className="pt-20">
+          <SpecialtyFinder />
         </section>
 
         {/* LIVE QUEUE */}
@@ -181,6 +173,9 @@ function Home() {
           </div>
           <CallDoctorAnimation className="mx-auto" />
         </motion.section>
+
+        {/* PATIENT REVIEWS */}
+        <PatientReviews />
 
       </div>
 
