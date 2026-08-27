@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { Heart, Instagram, Linkedin, Stethoscope, Twitter } from "lucide-react";
+import { CaddyMountains } from "@/components/caddy/CaddyMountains";
 
 const COLUMNS: { title: string; links: { label: string; to?: string }[] }[] = [
   {
