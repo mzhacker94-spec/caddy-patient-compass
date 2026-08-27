@@ -5,17 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ * Caddy Care design system — "Warm Clinic".
+ * Cream paper + charcoal ink + care-teal primary + ember/gold foil accents.
+ * All colors are oklch tokens. Never hardcode colors in components.
  */
 
 @theme inline {
@@ -25,7 +17,8 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-4xl: calc(var(--radius) + 20px);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -45,91 +38,57 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-ring-offset-background: var(--background);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-cream: var(--cream);
+  --color-cream-deep: var(--cream-deep);
+  --color-care: var(--care);
+  --color-care-deep: var(--care-deep);
+  --color-ember: var(--ember);
+  --color-gold: var(--gold);
+  --color-charcoal: var(--charcoal);
+
+  --font-hero: "Anton", system-ui, sans-serif;
+  --font-display: "Baloo 2", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
-}
+  --radius: 0.75rem;
 
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --cream: oklch(0.968 0.018 92);
+  --cream-deep: oklch(0.928 0.03 88);
+  --care: oklch(0.62 0.115 195);
+  --care-deep: oklch(0.5 0.1 197);
+  --ember: oklch(0.76 0.15 62);
+  --gold: oklch(0.86 0.13 90);
+  --charcoal: oklch(0.29 0.026 250);
+
+  --background: var(--cream);
+  --foreground: var(--charcoal);
+  --card: oklch(0.995 0.008 92);
+  --card-foreground: var(--charcoal);
+  --popover: oklch(0.995 0.008 92);
+  --popover-foreground: var(--charcoal);
+  --primary: var(--care);
+  --primary-foreground: oklch(0.99 0.01 195);
+  --secondary: var(--cream-deep);
+  --secondary-foreground: var(--charcoal);
+  --muted: var(--cream-deep);
+  --muted-foreground: oklch(0.52 0.02 250);
+  --accent: var(--ember);
+  --accent-foreground: oklch(0.24 0.03 60);
+  --destructive: oklch(0.585 0.21 27.5);
+  --destructive-foreground: oklch(0.985 0.01 60);
+  --border: oklch(0.88 0.026 88);
+  --input: oklch(0.88 0.026 88);
+  --ring: var(--care);
+
+  --shadow-card: 0 10px 30px -14px color-mix(in oklab, var(--charcoal) 45%, transparent);
+  --shadow-card-hover: 0 26px 60px -22px color-mix(in oklab, var(--charcoal) 50%, transparent);
+  --shadow-glow: 0 0 0 1px color-mix(in oklab, var(--care) 25%, transparent),
+    0 18px 45px -18px color-mix(in oklab, var(--care) 60%, transparent);
+  --gradient-care: linear-gradient(135deg, var(--care), oklch(0.72 0.12 175));
+  --gradient-foil: linear-gradient(120deg, var(--gold), var(--ember) 55%, var(--gold));
 }
 
 @layer base {
@@ -140,5 +99,126 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility glass-card {
+  background: color-mix(in oklab, var(--card) 62%, transparent);
+  backdrop-filter: blur(24px) saturate(170%);
+  border: 1px solid color-mix(in oklab, white 55%, transparent);
+  box-shadow: var(--shadow-card);
+}
+
+@utility hero-title {
+  font-family: var(--font-hero);
+  color: var(--cream);
+  -webkit-text-stroke: 2px var(--charcoal);
+  paint-order: stroke fill;
+  text-shadow:
+    0 1px 0 var(--gold),
+    0 4px 0 color-mix(in oklab, var(--ember) 70%, var(--charcoal)),
+    0 8px 0 color-mix(in oklab, var(--charcoal) 80%, transparent),
+    0 22px 34px color-mix(in oklab, var(--charcoal) 35%, transparent);
+  line-height: 0.94;
+  text-transform: uppercase;
+}
+
+@utility foil-text {
+  background: var(--gradient-foil);
+  background-clip: text;
+  color: transparent;
+}
+
+/* Chunky 3D button — beveled face with a solid dark "edge" underneath.
+ * Pair with motion whileHover={{ y: -2 }} / whileTap={{ y: 4 }} for the press. */
+@utility btn-3d {
+  box-shadow:
+    inset 0 2px 0 color-mix(in oklab, white 30%, transparent),
+    inset 0 -3px 0 color-mix(in oklab, black 14%, transparent),
+    0 6px 0 var(--care-deep),
+    0 18px 30px -14px color-mix(in oklab, var(--care-deep) 75%, transparent);
+  transition: box-shadow 0.15s ease;
+}
+
+@utility btn-3d-pressed {
+  box-shadow:
+    inset 0 2px 0 color-mix(in oklab, white 20%, transparent),
+    inset 0 -2px 0 color-mix(in oklab, black 10%, transparent),
+    0 2px 0 var(--care-deep),
+    0 8px 16px -10px color-mix(in oklab, var(--care-deep) 60%, transparent);
+}
+
+@utility clinic-grain {
+  background-image:
+    radial-gradient(color-mix(in oklab, var(--care) 12%, transparent) 1px, transparent 1px),
+    radial-gradient(color-mix(in oklab, var(--ember) 10%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px, 22px 22px;
+  background-position: 0 0, 11px 11px;
+}
+
+@keyframes foil-sweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@utility foil-animate {
+  background-size: 200% 100%;
+  animation: foil-sweep 4s linear infinite;
+}
+
+/*
+ * Reduced motion: kill CSS-driven loops and page transitions.
+ * NOTE: never override animation-duration globally with !important — that
+ * breaks Framer Motion's WAAPI entrances and leaves elements stuck at their
+ * initial opacity. Motion handles reduced motion itself via MotionConfig.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .foil-animate {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@utility story-link {
+  position: relative;
+}
+@utility glass-pane {
+  background: color-mix(in oklab, var(--card) 48%, transparent);
+  backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid color-mix(in oklab, white 60%, transparent);
+  box-shadow:
+    var(--shadow-card-hover),
+    inset 0 1px 0 color-mix(in oklab, white 70%, transparent);
+}
+@utility field-glass {
+  background: color-mix(in oklab, var(--card) 70%, transparent);
+  border: 1px solid color-mix(in oklab, var(--charcoal) 12%, transparent);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  &:focus {
+    outline: none;
+    border-color: color-mix(in oklab, var(--care) 60%, transparent);
+    box-shadow: var(--shadow-glow);
   }
 }
