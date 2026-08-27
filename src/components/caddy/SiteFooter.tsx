@@ -143,7 +143,7 @@ export function SiteFooter() {
                             {l.label}
                           </Link>
                         ) : (
-                          <span className="story-link inline-block cursor-pointer text-muted-foreground transition-colors hover:text-foreground">
+                          <span className="inline-block text-muted-foreground">
                             {l.label}
                           </span>
                         )}
