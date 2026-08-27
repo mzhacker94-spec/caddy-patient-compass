@@ -25,6 +25,7 @@ const HEADLINE = "What do you need today?".split(" ");
 export function SpecialtyFinder() {
   const calm = useReducedMotion();
   const [active, setActive] = useState<string>(SPECIALIZATIONS[0]!.id);
+  const [query, setQuery] = useState("");
   const selected = SPECIALIZATIONS.find((s) => s.id === active)!;
 
   return (
