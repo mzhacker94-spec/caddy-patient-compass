@@ -45,7 +45,7 @@ export function AvatarPortrait({
           width={512}
           height={512}
           loading="eager"
-          className="size-full origin-bottom scale-90 object-cover transition-[scale,filter] duration-300 group-hover:scale-[1.08]"
+          className="size-full origin-bottom scale-90 rounded-[1.5rem] object-cover transition-[scale,filter] duration-300 group-hover:scale-[1.08]"
           style={{ filter: "drop-shadow(6px 10px 8px color-mix(in oklab, var(--care-deep) 45%, transparent))" }}
         />
       </div>
