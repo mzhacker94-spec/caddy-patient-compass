@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { Crown, Droplet, MapPin, Sparkles } from "lucide-react";
 import type { Patient } from "@/lib/profile-data";
+import { AvatarPortrait } from "@/components/profile/AvatarPortrait";
 
 export function ProfileHero({ patient }: { patient: Patient }) {
   const calm = useReducedMotion() ?? false;
@@ -26,33 +27,7 @@ export function ProfileHero({ patient }: { patient: Patient }) {
       />
 
       <div className="relative grid gap-8 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center">
-        <div className="relative mx-auto flex size-36 shrink-0 items-center justify-center sm:mx-0 sm:size-40">
-          {/* pulse ring */}
-          <motion.span
-            aria-hidden
-            className="absolute inset-0 rounded-full border-2 border-primary/60"
-            animate={calm ? {} : { scale: [1, 1.22, 1], opacity: [0.8, 0, 0.8] }}
-            transition={{ duration: 2.8, repeat: Infinity, ease: "easeOut" }}
-          />
-          <motion.span
-            aria-hidden
-            className="absolute inset-2 rounded-full blur-2xl"
-            style={{ background: "color-mix(in oklab, var(--care) 55%, transparent)" }}
-            animate={calm ? {} : { scale: [0.92, 1.1, 0.92], opacity: [0.45, 0.8, 0.45] }}
-            transition={{ duration: 4.4, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.img
-            src={patient.avatar}
-            alt={`${patient.name}, Caddy Care patient`}
-            width={768}
-            height={768}
-            className="relative size-32 rounded-full object-cover sm:size-36"
-            style={{ boxShadow: "var(--shadow-glow)" }}
-            initial={{ scale: 0.85, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 16, delay: 0.15 }}
-          />
-        </div>
+        <AvatarPortrait src={patient.avatar} name={patient.name} caption={patient.city} />
 
         <div className="min-w-0 space-y-3 text-center sm:text-left">
           <motion.p

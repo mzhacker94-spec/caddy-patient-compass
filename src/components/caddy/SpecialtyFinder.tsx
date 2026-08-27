@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { SPECIALIZATIONS } from "@/lib/home-data";
-import { Baby, Eye, Heart, Smile, Sparkles, Stethoscope, Search } from "lucide-react";
+import { Baby, Clock, Eye, Heart, MapPin, Smile, Sparkles, Stethoscope, Search } from "lucide-react";
 
 const ICONS = {
   tooth: Smile,
@@ -25,6 +25,7 @@ const HEADLINE = "What do you need today?".split(" ");
 export function SpecialtyFinder() {
   const calm = useReducedMotion();
   const [active, setActive] = useState<string>(SPECIALIZATIONS[0]!.id);
+  const [query, setQuery] = useState("");
   const selected = SPECIALIZATIONS.find((s) => s.id === active)!;
 
   return (
@@ -89,20 +90,49 @@ export function SpecialtyFinder() {
         </motion.p>
       </div>
 
-      {/* filter rail */}
+      {/* search + filter console */}
       <motion.div
         initial={{ opacity: 0, y: 26 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ type: "spring", stiffness: 160, damping: 20 }}
-        className="glass-pane mx-auto mt-8 max-w-4xl rounded-4xl p-3 sm:p-4"
+        className="glass-pane mx-auto mt-8 max-w-4xl rounded-4xl p-3 sm:p-5"
       >
+        {/* search bar */}
+        <div className="flex flex-col gap-2 rounded-3xl bg-background/60 p-2 sm:flex-row sm:items-center">
+          <label className="flex flex-1 items-center gap-2.5 rounded-2xl px-3 py-2.5">
+            <Search aria-hidden className="size-4 shrink-0 text-primary" strokeWidth={3} />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={`Search ${selected.label.toLowerCase()} near you`}
+              aria-label="Search doctors and clinics"
+              className="w-full bg-transparent text-sm font-semibold outline-none placeholder:text-muted-foreground"
+            />
+          </label>
+          <span className="hidden h-7 w-px bg-border sm:block" />
+          <span className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-muted-foreground">
+            <MapPin aria-hidden className="size-3.5" /> Karachi · Clifton
+          </span>
+          <motion.button
+            type="button"
+            whileHover={{ y: -2 }}
+            whileTap={{ y: 3, scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 480, damping: 18 }}
+            className="btn-3d rounded-2xl px-5 py-3 text-sm font-extrabold text-primary-foreground"
+            style={{ background: "var(--gradient-care)" }}
+          >
+            Find slots
+          </motion.button>
+        </div>
+
+        {/* specialty chips */}
         <motion.ul
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.3 }}
-          className="flex flex-wrap justify-center gap-2 sm:gap-2.5"
+          className="mt-4 flex flex-wrap justify-center gap-2 sm:gap-2.5"
         >
           {SPECIALIZATIONS.map((s) => {
             const Icon = ICONS[s.icon];
@@ -122,8 +152,10 @@ export function SpecialtyFinder() {
                   whileHover={{ y: -3 }}
                   whileTap={{ scale: 0.96 }}
                   transition={{ type: "spring", stiffness: 420, damping: 20 }}
-                  className={`relative flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-extrabold transition-colors ${
-                    isActive ? "text-primary-foreground" : "text-foreground"
+                  className={`relative flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-extrabold transition-colors ${
+                    isActive
+                      ? "border-transparent text-primary-foreground"
+                      : "border-border bg-background/50 text-foreground hover:border-primary/40"
                   }`}
                 >
                   {isActive && (
@@ -139,11 +171,11 @@ export function SpecialtyFinder() {
                     />
                   )}
                   <span
-                    className={`relative grid size-8 place-items-center rounded-full ${
+                    className={`relative grid size-7 place-items-center rounded-full ${
                       isActive ? "bg-primary-foreground/20 text-primary-foreground" : tintClass[s.tint]
                     }`}
                   >
-                    <Icon aria-hidden className="size-4" strokeWidth={2.4} />
+                    <Icon aria-hidden className="size-3.5" strokeWidth={2.4} />
                   </span>
                   <span className="relative">{s.label}</span>
                 </motion.button>
@@ -152,18 +184,32 @@ export function SpecialtyFinder() {
           })}
         </motion.ul>
 
-        <div className="mt-3 flex items-center justify-center gap-2 border-t border-border/60 pt-3">
-          <motion.p
-            key={selected.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={spring}
-            className="text-xs font-semibold text-muted-foreground"
-          >
-            <span className="font-extrabold text-foreground">{selected.label}</span> — 24 verified
-            clinics nearby · next slot in
-            <span className="text-primary"> 18 min</span>
-          </motion.p>
+        {/* live readout */}
+        <div className="mt-4 grid gap-2 border-t border-border/60 pt-4 sm:grid-cols-3">
+          {[
+            { icon: Stethoscope, label: `${selected.label} clinics`, value: "24 verified" },
+            { icon: Clock, label: "Next free slot", value: "in 18 min" },
+            { icon: Sparkles, label: "Avg. wait today", value: "9 minutes" },
+          ].map((item, i) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ ...spring, delay: 0.05 * i }}
+              className="flex items-center gap-2.5 rounded-2xl bg-secondary/60 px-3 py-2.5"
+            >
+              <span className="grid size-8 place-items-center rounded-xl bg-primary/15 text-primary">
+                <item.icon aria-hidden className="size-4" strokeWidth={2.6} />
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate text-[0.65rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                  {item.label}
+                </span>
+                <span className="block truncate text-sm font-extrabold">{item.value}</span>
+              </span>
+            </motion.div>
+          ))}
         </div>
       </motion.div>
     </section>
