@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { MapPin, Menu, Stethoscope } from "lucide-react";
+import { Menu, Stethoscope } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { NotificationBell } from "./NotificationCenter";
 
