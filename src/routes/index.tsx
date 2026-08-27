@@ -8,6 +8,9 @@ import { DoctorCarousel } from "@/components/caddy/DoctorCarousel";
 import { QueueTeaser } from "@/components/caddy/QueueTeaser";
 import { SiteFooter } from "@/components/caddy/SiteFooter";
 import { CallDoctorAnimation } from "@/components/caddy/CallDoctorAnimation";
+import { HowCaddyWorks } from "@/components/caddy/HowCaddyWorks";
+import { QueueToast } from "@/components/caddy/QueueToast";
+
 
 import { Link } from "@tanstack/react-router";
 
@@ -132,10 +135,21 @@ function Home() {
         </section>
 
 
+        {/* HOW CADDY WORKS */}
+        <div className="pt-20">
+          <HowCaddyWorks />
+        </div>
+
+        {/* LIVE QUEUE TOAST PREVIEW */}
+        <div className="pt-10">
+          <QueueToast demo position={4} doctorName="Dr. Ahmed" nowServing={1} />
+        </div>
+
         {/* SPECIALIZATIONS */}
         <section className="pt-20">
           <SpecialtyFinder />
         </section>
+
 
         {/* LIVE QUEUE */}
         <div className="pt-14">
