@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { MapPin, Menu, Stethoscope } from "lucide-react";
+import { Menu, Stethoscope } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { NotificationBell } from "./NotificationCenter";
 
@@ -57,10 +57,6 @@ export function SiteNav({ minimal = false }: { minimal?: boolean } = {}) {
       </ul>
 
       <div className="ml-auto flex items-center gap-2 lg:ml-0">
-        <span className="hidden items-center gap-1.5 rounded-full bg-secondary px-3 py-2 text-xs font-bold text-muted-foreground sm:flex">
-          <MapPin aria-hidden className="size-3.5" />
-          Karachi · Clifton
-        </span>
         <NotificationBell />
         <motion.div
           whileHover={{ y: -2 }}
