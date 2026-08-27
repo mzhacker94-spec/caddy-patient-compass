@@ -11,7 +11,7 @@ const LINKS: { label: string; to: string }[] = [
   { label: "For clinics", to: "/doctor" },
 ];
 
-export function SiteNav() {
+export function SiteNav({ minimal = false }: { minimal?: boolean } = {}) {
   return (
     <motion.nav
       initial={{ opacity: 0, y: -22 }}
@@ -36,7 +36,7 @@ export function SiteNav() {
         </span>
       </motion.a>
 
-      <ul className="mx-auto hidden items-center gap-1 text-sm font-bold lg:flex">
+      <ul className={`mx-auto hidden items-center gap-1 text-sm font-bold ${minimal ? "" : "lg:flex"}`}>
         {LINKS.map((link, i) => (
           <motion.li
             key={link.label}

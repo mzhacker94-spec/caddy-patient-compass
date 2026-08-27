@@ -22,7 +22,7 @@ export function StreakBoard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={{ type: "spring", stiffness: 150, damping: 18 }}
-      className="glass-card relative mt-8 overflow-hidden rounded-4xl p-6 sm:p-8"
+      className="stack-card relative mt-8 overflow-hidden rounded-4xl p-6 sm:p-8"
     >
       <div className="grid gap-8 lg:grid-cols-[auto_minmax(0,1fr)] lg:items-center">
         {/* big glowing current streak */}

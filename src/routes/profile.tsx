@@ -92,7 +92,7 @@ function ProfilePage() {
       <div aria-hidden className="clinic-grain pointer-events-none absolute inset-0 opacity-70" />
 
       <div className="relative mx-auto max-w-6xl px-5 pb-24 pt-4 sm:px-8">
-        <SiteNav />
+        <SiteNav minimal />
         <StateToggle state={state} />
 
         <ProfileHero patient={mock.patient} />

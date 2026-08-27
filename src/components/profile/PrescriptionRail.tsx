@@ -63,7 +63,7 @@ export function PrescriptionRail({ prescriptions }: { prescriptions: Prescriptio
               transition={{ type: "spring", stiffness: 200, damping: 18 }}
               whileHover={{ y: -5 }}
               whileTap={{ scale: 0.98 }}
-              className="glass-card w-[17rem] shrink-0 snap-start rounded-3xl p-5 text-left sm:w-[19rem]"
+              className="stack-card w-[17rem] shrink-0 snap-start rounded-3xl p-5 text-left sm:w-[19rem]"
             >
               <div className="flex items-center gap-3">
                 <img

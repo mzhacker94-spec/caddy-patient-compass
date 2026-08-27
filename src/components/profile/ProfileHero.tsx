@@ -1,7 +1,6 @@
 import { motion, useReducedMotion } from "motion/react";
 import { Crown, Droplet, MapPin, Sparkles } from "lucide-react";
 import type { Patient } from "@/lib/profile-data";
-import { ProfileCaddy } from "./ProfileCaddy";
 
 export function ProfileHero({ patient }: { patient: Patient }) {
   const calm = useReducedMotion() ?? false;
@@ -116,8 +115,6 @@ export function ProfileHero({ patient }: { patient: Patient }) {
         </div>
       </div>
 
-      {/* 3D Caddy companion */}
-      <ProfileCaddy className="pointer-events-none absolute -top-2 right-0 size-24 opacity-90 sm:-bottom-6 sm:top-auto sm:size-56 sm:opacity-100 lg:size-64" />
     </motion.section>
   );
 }
