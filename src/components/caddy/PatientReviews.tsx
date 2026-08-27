@@ -119,7 +119,7 @@ export function PatientReviews() {
         </motion.h2>
       </div>
 
-      <div className="mt-9 grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+      <div className="mt-9 grid items-start gap-5 lg:grid-cols-[1.15fr_0.85fr]">
         {/* spotlight review */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
