@@ -126,22 +126,22 @@ export function SpecialtyFinder() {
           </motion.button>
         </div>
 
-        {/* specialty chips */}
+        {/* specialty tiles */}
         <motion.ul
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-          className="mt-4 flex flex-wrap justify-center gap-2 sm:gap-2.5"
+          viewport={{ once: true, amount: 0.2 }}
+          className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4"
         >
-          {SPECIALIZATIONS.map((s) => {
+          {SPECIALIZATIONS.map((s, i) => {
             const Icon = ICONS[s.icon];
             const isActive = s.id === active;
             return (
               <motion.li
                 key={s.id}
                 variants={{
-                  hidden: { opacity: 0, y: 20, scale: 0.94 },
+                  hidden: { opacity: 0, y: 22, scale: 0.9 },
                   show: { opacity: 1, y: 0, scale: 1, transition: spring },
                 }}
               >
@@ -149,20 +149,20 @@ export function SpecialtyFinder() {
                   type="button"
                   onClick={() => setActive(s.id)}
                   aria-pressed={isActive}
-                  whileHover={{ y: -3 }}
-                  whileTap={{ scale: 0.96 }}
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
                   transition={{ type: "spring", stiffness: 420, damping: 20 }}
-                  className={`relative flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-extrabold transition-colors ${
+                  className={`relative flex h-full w-full flex-col items-start gap-2 overflow-hidden rounded-3xl border p-3.5 text-left transition-colors ${
                     isActive
                       ? "border-transparent text-primary-foreground"
-                      : "border-border bg-background/50 text-foreground hover:border-primary/40"
+                      : "glass-card border-border/70 text-foreground hover:border-primary/40"
                   }`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="specialty-highlight"
                       aria-hidden
-                      className="absolute inset-0 rounded-full"
+                      className="absolute inset-0 rounded-3xl"
                       style={{
                         background: "var(--gradient-care)",
                         boxShadow: "var(--shadow-glow)",
@@ -170,19 +170,65 @@ export function SpecialtyFinder() {
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
-                  <span
-                    className={`relative grid size-7 place-items-center rounded-full ${
+                  <motion.span
+                    className={`relative grid size-10 place-items-center rounded-2xl ${
                       isActive ? "bg-primary-foreground/20 text-primary-foreground" : tintClass[s.tint]
                     }`}
+                    whileHover={calm ? {} : { rotate: 8, scale: 1.08 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 12 }}
                   >
-                    <Icon aria-hidden className="size-3.5" strokeWidth={2.4} />
+                    <Icon aria-hidden className="size-5" strokeWidth={2.4} />
+                  </motion.span>
+                  <span className="relative text-sm font-extrabold leading-tight">{s.label}</span>
+                  <span
+                    className={`relative text-[0.7rem] font-bold ${
+                      isActive ? "text-primary-foreground/80" : "text-muted-foreground"
+                    }`}
+                  >
+                    {12 + i * 5} doctors available
                   </span>
-                  <span className="relative">{s.label}</span>
                 </motion.button>
               </motion.li>
             );
           })}
+
+          {/* triage tile */}
+          <motion.li
+            variants={{
+              hidden: { opacity: 0, y: 22, scale: 0.9 },
+              show: { opacity: 1, y: 0, scale: 1, transition: spring },
+            }}
+          >
+            <motion.button
+              type="button"
+              whileHover={{ y: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 420, damping: 20 }}
+              className="relative flex h-full w-full flex-col items-start gap-2 overflow-hidden rounded-3xl border border-accent/40 p-3.5 text-left"
+              style={{ background: "color-mix(in oklab, var(--ember) 16%, var(--card))" }}
+            >
+              <motion.span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-40"
+                style={{ background: "var(--gradient-foil)" }}
+                animate={calm ? {} : { opacity: [0.22, 0.45, 0.22] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <motion.span
+                className="relative grid size-10 place-items-center rounded-2xl bg-background/70 text-accent-foreground"
+                animate={calm ? {} : { scale: [1, 1.08, 1] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Mic aria-hidden className="size-5" strokeWidth={2.6} />
+              </motion.span>
+              <span className="relative text-sm font-extrabold leading-tight">Not sure? Ask Caddy</span>
+              <span className="relative text-[0.7rem] font-bold text-foreground/70">
+                Voice triage · 30 seconds
+              </span>
+            </motion.button>
+          </motion.li>
         </motion.ul>
+
 
         {/* live readout */}
         <div className="mt-4 grid gap-2 border-t border-border/60 pt-4 sm:grid-cols-3">
