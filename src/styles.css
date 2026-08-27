@@ -307,3 +307,15 @@
     opacity: 1;
   }
 }
+
+@utility avatar-portrait-clip {
+  -webkit-mask-image: radial-gradient(115% 55% at 50% 118%, transparent 49.5%, #000 50%);
+  mask-image: radial-gradient(115% 55% at 50% 118%, transparent 49.5%, #000 50%);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
