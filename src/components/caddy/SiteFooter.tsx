@@ -5,26 +5,31 @@ import { CaddyMountains } from "@/components/caddy/CaddyMountains";
 
 const COLUMNS: { title: string; links: { label: string; to?: string }[] }[] = [
   {
-    title: "Care",
+    title: "Patients",
     links: [
       { label: "Find doctors", to: "/" },
       { label: "Live queue", to: "/queue" },
+      { label: "My profile", to: "/profile" },
       { label: "Health vault", to: "/dashboard" },
-      { label: "Notifications", to: "/dashboard" },
     ],
   },
   {
-    title: "For clinics",
+    title: "Clinics",
     links: [
       { label: "Doctor console", to: "/doctor" },
-      { label: "Queue displays" },
-      { label: "Reception kit" },
-      { label: "Pricing" },
+      { label: "Onboard a clinic", to: "/onboarding" },
+      { label: "Create account", to: "/signup" },
+      { label: "Sign in", to: "/login" },
     ],
   },
   {
-    title: "Company",
-    links: [{ label: "About Caddy" }, { label: "Careers" }, { label: "Press" }, { label: "Blog" }],
+    title: "Clinic hours",
+    links: [
+      { label: "Mon – Fri · 9:00 – 21:00" },
+      { label: "Sat · 10:00 – 18:00" },
+      { label: "Sun · emergency queue only" },
+      { label: "Clifton, Karachi" },
+    ],
   },
 ];
 
