@@ -273,10 +273,15 @@
     height: 120px;
     border-radius: 50%;
     pointer-events: none;
-    background:
-      radial-gradient(circle at 78% 22%, color-mix(in oklab, var(--gold) 34%, transparent) 0 22px, transparent 23px),
-      radial-gradient(circle at 74% 26%, color-mix(in oklab, var(--ember) 22%, transparent) 0 38px, transparent 39px),
-      radial-gradient(circle at 70% 30%, color-mix(in oklab, var(--care) 20%, transparent) 0 56px, transparent 57px);
+    background: radial-gradient(
+      circle at 70% 30%,
+      color-mix(in oklab, var(--gold) 32%, transparent) 0 20px,
+      transparent 21px 26px,
+      color-mix(in oklab, var(--ember) 20%, transparent) 27px 40px,
+      transparent 41px 46px,
+      color-mix(in oklab, var(--care) 18%, transparent) 47px 58px,
+      transparent 59px
+    );
     transform: translate3d(0, 0, 28px);
     opacity: 0.75;
     transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
