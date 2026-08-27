@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { Crown, Droplet, MapPin, Sparkles } from "lucide-react";
 import type { Patient } from "@/lib/profile-data";
+import { AvatarPortrait } from "@/components/profile/AvatarPortrait";
 
 export function ProfileHero({ patient }: { patient: Patient }) {
   const calm = useReducedMotion() ?? false;
