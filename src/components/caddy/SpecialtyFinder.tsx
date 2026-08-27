@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { SPECIALIZATIONS } from "@/lib/home-data";
-import { Baby, Clock, Eye, Heart, MapPin, Smile, Sparkles, Stethoscope, Search } from "lucide-react";
+import { Baby, Clock, Eye, Heart, MapPin, Mic, Smile, Sparkles, Stethoscope, Search } from "lucide-react";
 
 const ICONS = {
   tooth: Smile,
@@ -20,7 +20,7 @@ const tintClass = {
 
 const spring = { type: "spring" as const, stiffness: 300, damping: 22, mass: 0.7 };
 
-const HEADLINE = "What do you need today?".split(" ");
+const HEADLINE = "What are you looking for today?".split(" ");
 
 export function SpecialtyFinder() {
   const calm = useReducedMotion();
