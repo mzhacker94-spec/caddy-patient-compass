@@ -36,8 +36,8 @@ export function SiteNav({ minimal = false }: { minimal?: boolean } = {}) {
         </span>
       </motion.a>
 
-      <ul className={`mx-auto hidden items-center gap-1 text-sm font-bold ${minimal ? "" : "lg:flex"}`}>
-        {LINKS.map((link, i) => (
+      <ul className="no-scrollbar mx-auto hidden items-center gap-1 overflow-x-auto text-sm font-bold md:flex">
+        {(minimal ? LINKS.filter((l) => l.to !== "/profile") : LINKS).map((link, i) => (
           <motion.li
             key={link.label}
             initial={{ opacity: 0, y: -10 }}
