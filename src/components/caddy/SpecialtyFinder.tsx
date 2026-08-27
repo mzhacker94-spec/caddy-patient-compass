@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { SPECIALIZATIONS } from "@/lib/home-data";
-import { Baby, Eye, Heart, Smile, Sparkles, Stethoscope, Search } from "lucide-react";
+import { Baby, Clock, Eye, Heart, MapPin, Smile, Sparkles, Stethoscope, Search } from "lucide-react";
 
 const ICONS = {
   tooth: Smile,
