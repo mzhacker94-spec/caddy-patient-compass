@@ -222,3 +222,83 @@
     box-shadow: var(--shadow-glow);
   }
 }
+
+/* Layered 3D stack card — glass sheet + orbiting rings, tilts on hover.
+ * Content children float above the glass layer via translateZ. */
+@utility stack-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotate3d(0, 0, 0, 0deg);
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--card) 88%, white) 0%,
+    color-mix(in oklab, var(--card) 74%, transparent) 45%,
+    color-mix(in oklab, var(--care) 12%, var(--card)) 100%
+  );
+  backdrop-filter: blur(24px) saturate(170%);
+  border: 1px solid color-mix(in oklab, white 55%, transparent);
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1px 0 color-mix(in oklab, white 65%, transparent);
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.55s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border-radius: inherit;
+    border-top-right-radius: 62%;
+    background: linear-gradient(
+      0deg,
+      color-mix(in oklab, var(--card) 32%, transparent) 0%,
+      color-mix(in oklab, var(--card) 72%, transparent) 100%
+    );
+    border-inline-start: 1px solid color-mix(in oklab, white 72%, transparent);
+    border-bottom: 1px solid color-mix(in oklab, white 68%, transparent);
+    transform: translate3d(0, 0, 18px);
+    pointer-events: none;
+    transition: inset 0.5s ease, border-top-right-radius 0.5s ease;
+    z-index: 1;
+  }
+
+  /* orbiting rings in the top-right corner */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    inset-inline-end: 10px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 78% 22%, color-mix(in oklab, var(--gold) 34%, transparent) 0 22px, transparent 23px),
+      radial-gradient(circle at 74% 26%, color-mix(in oklab, var(--ember) 22%, transparent) 0 38px, transparent 39px),
+      radial-gradient(circle at 70% 30%, color-mix(in oklab, var(--care) 20%, transparent) 0 56px, transparent 57px);
+    transform: translate3d(0, 0, 28px);
+    opacity: 0.75;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+    z-index: 1;
+  }
+
+  & > * {
+    position: relative;
+    z-index: 2;
+    transform: translate3d(0, 0, 26px);
+  }
+
+  &:hover {
+    transform: perspective(1000px) rotate3d(1, 1, 0, 9deg);
+    box-shadow:
+      var(--shadow-card-hover),
+      0 0 60px -14px color-mix(in oklab, var(--care) 55%, transparent),
+      inset 0 1px 0 color-mix(in oklab, white 70%, transparent);
+  }
+
+  &:hover::after {
+    transform: translate3d(0, 0, 56px) scale(1.06);
+    opacity: 1;
+  }
+}

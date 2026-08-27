@@ -39,7 +39,7 @@ export function StatChips({ stats, isNew }: { stats: Stat[]; isNew: boolean }) {
               }}
               transition={{ type: "spring", stiffness: 200, damping: 18 }}
               whileHover={{ y: -4 }}
-              className="glass-card relative overflow-hidden rounded-3xl p-5"
+              className="stack-card relative overflow-hidden rounded-3xl p-5"
             >
               <motion.span
                 aria-hidden

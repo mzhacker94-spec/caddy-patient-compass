@@ -102,7 +102,7 @@ export function VisitTimeline({ visits }: { visits: Visit[] }) {
                     aria-expanded={open}
                     whileHover={{ y: -3 }}
                     transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                    className="glass-card block w-full rounded-3xl p-5 text-left"
+                    className="stack-card block w-full rounded-3xl p-5 text-left"
                   >
                     <motion.div layout="position" className="flex flex-wrap items-center gap-4">
                       <img

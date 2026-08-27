@@ -284,7 +284,7 @@ export function LabReportsGrid({ labs }: { labs: LabReport[] }) {
                 }}
                 transition={{ type: "spring", stiffness: 200, damping: 18 }}
                 whileHover={ready ? { y: -5 } : {}}
-                className="glass-card relative overflow-hidden rounded-3xl p-5 text-left disabled:cursor-default"
+                className="stack-card relative overflow-hidden rounded-3xl p-5 text-left disabled:cursor-default"
               >
                 {!ready ? (
                   <motion.span
