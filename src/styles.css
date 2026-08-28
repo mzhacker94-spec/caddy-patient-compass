@@ -325,21 +325,26 @@
    ============================================================ */
 
 .clay-scene {
-  --clay-bg: #e3e8ef;
+  --clay-bg: #e6ebf2;
   --clay-light: #ffffff;
   --clay-dark: #a9b6c8;
-  --clay-ink: #22303f;
-  --clay-muted: #62727f;
+  --clay-ink: #1b2733;
+  --clay-muted: #5c6b7a;
   --clay-caddy: #6f5cf0;
   --clay-care: #12b3a0;
   --clay-time: #f08a3c;
   --clay-queue: #e8547c;
 
-  background: var(--clay-bg);
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  background:
+    radial-gradient(120% 90% at 12% 0%, #f2f5fa, transparent 60%),
+    var(--clay-bg);
   color: var(--clay-ink);
-  border-radius: var(--radius-4xl);
+  border-radius: 0;
   overflow: hidden;
-  margin-top: 5rem;
+  margin-top: 4rem;
 }
 
 .clay-viewport {
@@ -353,10 +358,8 @@
   position: absolute;
   top: 50%;
   left: 0;
-  transform: translateY(-50%);
-  width: 3400px;
-  height: 1000px;
   will-change: transform;
+  backface-visibility: hidden;
 }
 
 .clay-lines {
@@ -373,7 +376,7 @@
   stroke-width: 4;
   fill: none;
   stroke-linecap: round;
-  opacity: 0.35;
+  opacity: 0.3;
 }
 
 .clay-el {
@@ -403,6 +406,7 @@
   border-radius: 999px;
   font-size: 14px;
   font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--clay-muted);
   white-space: nowrap;
   display: flex;
@@ -415,11 +419,11 @@
 }
 
 .clay-card {
-  width: 300px;
+  width: 320px;
   border-radius: 34px;
-  border: 3px solid rgba(255, 255, 255, 0.55);
+  border: 3px solid rgba(255, 255, 255, 0.6);
   cursor: default;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
   overflow: hidden;
 }
 
@@ -433,7 +437,7 @@
 
 .clay-card-head {
   position: relative;
-  height: 168px;
+  height: 180px;
   padding: 18px;
   display: flex;
   flex-direction: column;
@@ -442,14 +446,13 @@
   overflow: hidden;
 }
 
+/* Full-color photo — only a soft legibility scrim sits on top, no color wash. */
 .clay-card-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.5;
-  mix-blend-mode: luminosity;
   pointer-events: none;
 }
 
@@ -457,18 +460,21 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 100% at 20% 0%, rgba(255, 255, 255, 0.35), transparent 60%);
+  background: linear-gradient(to top, rgba(12, 18, 26, 0.72) 0%, rgba(12, 18, 26, 0.18) 48%, rgba(12, 18, 26, 0.28) 100%);
   pointer-events: none;
 }
 
 .clay-badge {
   padding: 5px 12px;
-  border-radius: 14px;
-  font-size: 12px;
+  border-radius: 999px;
+  font-size: 11px;
   font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: #fff;
-  background: rgba(0, 0, 0, 0.22);
-  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.25);
+  background: rgba(12, 18, 26, 0.42);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
 }
 
 .clay-badge-icon {
@@ -477,24 +483,29 @@
   width: 38px;
   height: 38px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.45);
 }
 
 .clay-card-title {
   position: relative;
-  font-size: 21px;
+  font-family: var(--font-display, inherit);
+  font-size: 23px;
+  line-height: 1.15;
   font-weight: 800;
-  letter-spacing: 0.2px;
-  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.28);
+  letter-spacing: -0.02em;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
 }
 
 .clay-card-sub {
   position: relative;
-  font-size: 13px;
+  margin-top: 4px;
+  font-size: 13.5px;
+  line-height: 1.35;
   font-weight: 600;
-  opacity: 0.92;
+  opacity: 0.95;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
 }
 
 .clay-card-body {
@@ -502,12 +513,13 @@
   padding: 16px 18px 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.04);
 }
 
 .clay-line {
   font-size: 13.5px;
+  line-height: 1.4;
   font-weight: 600;
   color: var(--clay-muted);
   display: flex;
@@ -515,27 +527,32 @@
   gap: 8px;
 }
 
+.clay-line svg { flex: 0 0 auto; opacity: 0.7; }
+
 .clay-stats {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  gap: 10px;
+  font-size: 11px;
   font-weight: 800;
-  color: var(--clay-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--clay-muted) 80%, transparent);
   padding-top: 10px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
 }
 
 .clay-hint {
   position: absolute;
-  bottom: 36px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  font-weight: 800;
-  font-size: 14px;
-  letter-spacing: 0.3px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
   color: var(--clay-muted);
   background: var(--clay-bg);
-  padding: 12px 22px;
+  padding: 10px 20px;
   border-radius: 999px;
   z-index: 60;
   pointer-events: none;
@@ -547,15 +564,40 @@
 
 @keyframes clay-bounce {
   0%, 100% { transform: translate(-50%, 0); }
-  50% { transform: translate(-50%, -12px); }
+  50% { transform: translate(-50%, -10px); }
 }
 
 .clay-title-block {
   position: absolute;
   top: 44px;
-  left: 48px;
+  left: clamp(20px, 5vw, 64px);
   z-index: 50;
-  max-width: 420px;
+  max-width: 520px;
+}
+
+.clay-eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--clay-muted);
+}
+
+.clay-heading {
+  margin-top: 12px;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(28px, 3.4vw, 46px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--clay-ink);
+}
+
+.clay-subheading {
+  margin-top: 10px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--clay-muted);
 }
 
 .clay-progress {
@@ -595,7 +637,7 @@
 
 .clay-steps {
   position: absolute;
-  bottom: 100px;
+  bottom: 92px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 65;
@@ -633,6 +675,7 @@
   border-radius: 999px;
   font-size: 12.5px;
   font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--clay-muted);
   background: var(--clay-bg);
   box-shadow:
@@ -671,9 +714,27 @@
 
 .clay-step-arrow:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* ---- Stacked layout: small screens and reduced motion ---- */
+/* ---- Compact (narrow screens): same horizontal node flow, tighter chrome ---- */
 
-@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+.clay-scene.is-compact .clay-title-block {
+  top: 22px;
+  left: 18px;
+  right: 18px;
+  max-width: none;
+}
+
+.clay-scene.is-compact .clay-heading { font-size: 25px; margin-top: 8px; }
+.clay-scene.is-compact .clay-subheading { display: none; }
+.clay-scene.is-compact .clay-steps { bottom: 16px; max-width: calc(100vw - 24px); }
+.clay-scene.is-compact .clay-step-label { display: none; }
+.clay-scene.is-compact .clay-step { padding: 9px 12px; }
+.clay-scene.is-compact .clay-step-num { font-size: 12px; opacity: 1; }
+.clay-scene.is-compact .clay-hint { display: none; }
+.clay-scene.is-compact .clay-card:hover { transform: translate(-50%, -50%); }
+
+/* ---- Reduced motion: plain stacked reading order ---- */
+
+@media (prefers-reduced-motion: reduce) {
   .clay-viewport {
     height: auto;
     overflow: visible;
@@ -682,9 +743,8 @@
 
   .clay-canvas {
     position: static;
-    transform: none;
-    width: 100%;
-    height: auto;
+    width: 100% !important;
+    height: auto !important;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -693,7 +753,8 @@
 
   .clay-lines,
   .clay-dot,
-  .clay-hint {
+  .clay-hint,
+  .clay-progress {
     display: none;
   }
 
@@ -712,23 +773,14 @@
     margin-bottom: 20px;
   }
 
-  .clay-title-block h2 { font-size: 28px; }
-
   .clay-steps {
-    position: sticky;
-    bottom: 12px;
-    top: auto;
-    left: auto;
+    position: static;
     transform: none;
     width: 100%;
     max-width: 100%;
     margin: 16px auto 20px;
   }
 
-  .clay-progress { position: fixed; }
-}
-
-@media (prefers-reduced-motion: reduce) {
   .clay-hint { animation: none; }
   .clay-step,
   .clay-card { transition: none; }
