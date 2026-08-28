@@ -22,15 +22,88 @@ type Pos = { left: number; top: number };
 
 const at = ({ left, top }: Pos): CSSProperties => ({ left, top });
 
-/** Anchor x positions (canvas space) used by the clickable step prompts. */
-const STEPS = [
-  { id: "step-caddy", label: "Say hi to Caddy", x: 400 },
-  { id: "step-answers", label: "Get real answers", x: 1060 },
-  { id: "step-doctor", label: "Find your doctor", x: 1060 },
-  { id: "step-slot", label: "Pick a slot", x: 1060 },
-  { id: "step-booked", label: "Booked. Done.", x: 1700 },
-  { id: "step-queue", label: "Watch the queue", x: 2350 },
-  { id: "step-arrive", label: "Walk in on time", x: 2950 },
+type CardId = "caddy" | "answers" | "doctor" | "slot" | "booked" | "queue" | "arrive";
+
+/** Two layouts: a branching canvas for wide screens, one straight row for narrow ones. */
+type Layout = {
+  width: number;
+  height: number;
+  cards: Record<CardId, Pos>;
+  startDot: Pos;
+  startPill: Pos;
+  endDot: Pos;
+  endPill: Pos;
+  midDots: Pos[];
+  paths: string[];
+};
+
+const WIDE: Layout = {
+  width: 3400,
+  height: 1000,
+  cards: {
+    caddy: { left: 400, top: 500 },
+    answers: { left: 1060, top: 180 },
+    doctor: { left: 1060, top: 500 },
+    slot: { left: 1060, top: 820 },
+    booked: { left: 1700, top: 500 },
+    queue: { left: 2350, top: 500 },
+    arrive: { left: 2950, top: 500 },
+  },
+  startDot: { left: 120, top: 500 },
+  startPill: { left: 120, top: 380 },
+  endDot: { left: 3260, top: 500 },
+  endPill: { left: 3260, top: 380 },
+  midDots: [
+    { left: 700, top: 500 },
+    { left: 1400, top: 500 },
+  ],
+  paths: [
+    "M 120 500 L 250 500",
+    "M 550 500 L 700 500",
+    "M 700 500 C 800 500, 820 180, 910 180",
+    "M 700 500 L 910 500",
+    "M 700 500 C 800 500, 820 820, 910 820",
+    "M 1210 180 C 1300 180, 1320 500, 1400 500",
+    "M 1210 500 L 1400 500",
+    "M 1210 820 C 1300 820, 1320 500, 1400 500",
+    "M 1400 500 L 1550 500",
+    "M 1850 500 L 2200 500",
+    "M 2500 500 L 2800 500",
+    "M 3100 500 L 3260 500",
+  ],
+};
+
+const ROW_Y = 300;
+const COMPACT: Layout = {
+  width: 4720,
+  height: 600,
+  cards: {
+    caddy: { left: 420, top: ROW_Y },
+    answers: { left: 1040, top: ROW_Y },
+    doctor: { left: 1660, top: ROW_Y },
+    slot: { left: 2280, top: ROW_Y },
+    booked: { left: 2900, top: ROW_Y },
+    queue: { left: 3520, top: ROW_Y },
+    arrive: { left: 4140, top: ROW_Y },
+  },
+  startDot: { left: 120, top: ROW_Y },
+  startPill: { left: 160, top: 90 },
+  endDot: { left: 4520, top: ROW_Y },
+  endPill: { left: 4480, top: 90 },
+  midDots: [],
+  paths: [
+    "M 120 300 L 4520 300",
+  ],
+};
+
+const STEP_META: { id: string; card: CardId; label: string }[] = [
+  { id: "step-caddy", card: "caddy", label: "Say hi to Caddy" },
+  { id: "step-answers", card: "answers", label: "Get real answers" },
+  { id: "step-doctor", card: "doctor", label: "Find your doctor" },
+  { id: "step-slot", card: "slot", label: "Pick a time" },
+  { id: "step-booked", card: "booked", label: "Booked in 30s" },
+  { id: "step-queue", card: "queue", label: "Watch the queue" },
+  { id: "step-arrive", card: "arrive", label: "Walk in on time" },
 ];
 
 function Card({
@@ -67,7 +140,7 @@ function Card({
             alt={imageAlt ?? ""}
             width={640}
             height={512}
-            loading="lazy"
+            decoding="async"
             className="clay-card-img"
           />
         )}
@@ -97,54 +170,67 @@ export function ClinicJourney() {
   /** Maps a canvas x position to a window scrollY. Null while flow scrolling is inactive. */
   const scrollForXRef = useRef<((x: number) => number) | null>(null);
   const [active, setActive] = useState(0);
+  const [compact, setCompact] = useState(false);
+  const [ready, setReady] = useState(false);
 
-  const goToStep = useCallback((index: number) => {
-    const clamped = Math.max(0, Math.min(STEPS.length - 1, index));
-    setActive(clamped);
-    const step = STEPS[clamped];
-    if (!step) return;
-    const mapper = scrollForXRef.current;
-    if (mapper) {
-      window.scrollTo({ top: mapper(step.x), behavior: "smooth" });
-    } else {
-      document.getElementById(step.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+  const layout = compact ? COMPACT : WIDE;
+
+  // Decide the layout before the GSAP effect builds its triggers.
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 900px)");
+    const apply = () => setCompact(mq.matches);
+    apply();
+    setReady(true);
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
   }, []);
 
+  const goToStep = useCallback(
+    (index: number) => {
+      const clamped = Math.max(0, Math.min(STEP_META.length - 1, index));
+      setActive(clamped);
+      const step = STEP_META[clamped];
+      if (!step) return;
+      const mapper = scrollForXRef.current;
+      if (mapper) {
+        window.scrollTo({ top: mapper(layout.cards[step.card].left), behavior: "smooth" });
+      } else {
+        document.getElementById(step.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    },
+    [layout],
+  );
+
   useEffect(() => {
+    if (!ready) return;
     let ctx: { revert: () => void } | undefined;
-    let cleanupResize: (() => void) | undefined;
+    let cleanup: (() => void) | undefined;
     let cancelled = false;
 
     (async () => {
       const { gsap } = await import("gsap");
       const { ScrollTrigger } = await import("gsap/ScrollTrigger");
-      if (cancelled) return;
+      if (cancelled || !rootRef.current) return;
       gsap.registerPlugin(ScrollTrigger);
+      ScrollTrigger.config({ ignoreMobileResize: true });
 
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const stacked = reduce || window.matchMedia("(max-width: 900px)").matches;
 
-      // Stacked layout (mobile / reduced motion): no pinning, no horizontal scrub.
-      if (stacked) {
-        if (reduce) return;
-        ctx = gsap.context(() => {
-          gsap.utils.toArray<HTMLElement>(".gs-reveal").forEach((el) => {
-            gsap.from(el, {
-              y: 24,
-              opacity: 0,
-              duration: 0.5,
-              ease: "power2.out",
-              scrollTrigger: { trigger: el, start: "top 88%", once: true },
-            });
-          });
-        }, rootRef);
-        return;
-      }
+      // Reduced motion: plain stacked reading order, no pinning.
+      if (reduce) return;
 
       ctx = gsap.context(() => {
-        const canvas = rootRef.current!.querySelector<HTMLElement>(".clay-canvas")!;
-        const scrollMax = canvas.scrollWidth - window.innerWidth + 160;
+        const root = rootRef.current!;
+        const canvas = root.querySelector<HTMLElement>(".clay-canvas")!;
+
+        // Fit the canvas height into the viewport so narrow screens keep the node flow.
+        const chrome = compact ? 190 : 60;
+        const avail = Math.max(240, window.innerHeight - chrome);
+        const scale = Math.min(1, avail / layout.height);
+        gsap.set(canvas, { yPercent: -50, scale, transformOrigin: "left center", x: 0 });
+
+        const scaledWidth = layout.width * scale;
+        const scrollMax = Math.max(1, scaledWidth - window.innerWidth + (compact ? 40 : 160));
 
         const horizontal = gsap.to(canvas, {
           x: -scrollMax,
@@ -152,16 +238,17 @@ export function ClinicJourney() {
           scrollTrigger: {
             trigger: ".clay-viewport",
             pin: true,
-            scrub: 0.6,
+            scrub: 0.5,
             anticipatePin: 1,
+            fastScrollEnd: true,
             invalidateOnRefresh: true,
             end: () => "+=" + scrollMax,
             onUpdate: (self) => {
-              const x = self.progress * scrollMax + window.innerWidth / 2;
+              const x = (self.progress * scrollMax + window.innerWidth / 2) / scale;
               let nearest = 0;
               let best = Infinity;
-              STEPS.forEach((s, i) => {
-                const d = Math.abs(s.x - x);
+              STEP_META.forEach((s, i) => {
+                const d = Math.abs(layout.cards[s.card].left - x);
                 if (d < best) {
                   best = d;
                   nearest = i;
@@ -174,7 +261,7 @@ export function ClinicJourney() {
 
         const st = horizontal.scrollTrigger!;
         scrollForXRef.current = (x: number) => {
-          const p = Math.max(0, Math.min(1, (x - window.innerWidth / 2) / scrollMax));
+          const p = Math.max(0, Math.min(1, (x * scale - window.innerWidth / 2) / scrollMax));
           return st.start + p * (st.end - st.start);
         };
 
@@ -194,56 +281,64 @@ export function ClinicJourney() {
           },
         );
 
-        gsap.to(".clay-hint", {
-          opacity: 0,
-          y: 24,
-          scrollTrigger: { trigger: "body", start: "top -40", end: "top -120", scrub: true },
-        });
-
-        rootRef.current!.querySelectorAll<SVGPathElement>(".clay-path").forEach((path) => {
+        root.querySelectorAll<SVGPathElement>(".clay-path").forEach((path) => {
           const length = path.getTotalLength();
-          gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
-          gsap.to(path, {
-            strokeDashoffset: 0,
-            ease: "none",
-            scrollTrigger: {
-              trigger: path,
-              containerAnimation: horizontal,
-              start: "left right-=180",
-              end: "right center",
-              scrub: true,
+          gsap.fromTo(
+            path,
+            { strokeDasharray: length, strokeDashoffset: length },
+            {
+              strokeDashoffset: 0,
+              ease: "none",
+              scrollTrigger: {
+                trigger: path,
+                containerAnimation: horizontal,
+                start: "left right-=120",
+                end: "right center",
+                scrub: true,
+              },
             },
-          });
+          );
         });
 
-        rootRef.current!.querySelectorAll<HTMLElement>(".gs-reveal").forEach((el) => {
-          gsap.from(el, {
-            scale: 0.6,
-            opacity: 0,
-            rotation: el.classList.contains("clay-pill") ? -6 : 0,
-            duration: 0.6,
-            ease: "back.out(1.2)",
-            force3D: true,
-            scrollTrigger: {
-              trigger: el,
-              containerAnimation: horizontal,
-              start: "left right-=140",
-              toggleActions: "play none none reverse",
+        root.querySelectorAll<HTMLElement>(".gs-reveal").forEach((el) => {
+          gsap.fromTo(
+            el,
+            { scale: 0.72, opacity: 0 },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.5,
+              ease: "power3.out",
+              force3D: true,
+              scrollTrigger: {
+                trigger: el,
+                containerAnimation: horizontal,
+                start: "left right-=100",
+                toggleActions: "play none none reverse",
+              },
             },
-          });
+          );
         });
       }, rootRef);
 
-      // Re-evaluate the whole setup when the layout mode could change.
+      // Late layout shifts (fonts, images, sticky nav) are the usual cause of the
+      // first-scroll jump — refresh once everything has settled.
+      const refresh = () => ScrollTrigger.refresh();
+      requestAnimationFrame(refresh);
+      const t = window.setTimeout(refresh, 600);
+      if (document.readyState !== "complete") window.addEventListener("load", refresh, { once: true });
+
       let raf = 0;
       const onResize = () => {
         cancelAnimationFrame(raf);
-        raf = requestAnimationFrame(() => ScrollTrigger.refresh());
+        raf = requestAnimationFrame(refresh);
       };
       window.addEventListener("resize", onResize);
       window.addEventListener("orientationchange", onResize);
-      cleanupResize = () => {
+      cleanup = () => {
+        window.clearTimeout(t);
         cancelAnimationFrame(raf);
+        window.removeEventListener("load", refresh);
         window.removeEventListener("resize", onResize);
         window.removeEventListener("orientationchange", onResize);
       };
@@ -251,23 +346,24 @@ export function ClinicJourney() {
 
     return () => {
       cancelled = true;
-      cleanupResize?.();
+      cleanup?.();
       scrollForXRef.current = null;
       ctx?.revert();
     };
-  }, []);
+  }, [ready, compact, layout]);
 
   return (
-    <div className="clay-scene" ref={rootRef}>
+    <div className={"clay-scene" + (compact ? " is-compact" : "")} ref={rootRef}>
       <div className="clay-viewport">
         <div className="clay-progress" />
         <div className="clay-title-block">
-          <p className="text-xs font-extrabold uppercase tracking-[0.25em] text-[var(--clay-muted)]">
-            The clinic flow
-          </p>
-          <h2 className="mt-3 font-display text-4xl font-extrabold leading-tight text-[var(--clay-ink)]">
-            Talk to Caddy. Book your doctor. Skip the waiting room.
+          <p className="clay-eyebrow">The clinic flow</p>
+          <h2 className="clay-heading">
+            Chat with Caddy.
+            <br />
+            Book a doctor. Skip the wait.
           </h2>
+          <p className="clay-subheading">Seven simple steps, start to seat.</p>
         </div>
 
         <nav className="clay-steps" aria-label="Journey steps">
@@ -281,7 +377,7 @@ export function ClinicJourney() {
             <ChevronLeft size={16} />
           </button>
           <ol className="clay-step-list">
-            {STEPS.map((s, i) => (
+            {STEP_META.map((s, i) => (
               <li key={s.id}>
                 <button
                   type="button"
@@ -299,90 +395,90 @@ export function ClinicJourney() {
             type="button"
             className="clay-step-arrow"
             onClick={() => goToStep(active + 1)}
-            disabled={active === STEPS.length - 1}
+            disabled={active === STEP_META.length - 1}
             aria-label="Next step"
           >
             <ChevronRight size={16} />
           </button>
         </nav>
 
-        <div className="clay-canvas">
-          <svg className="clay-lines" viewBox="0 0 3400 1000" preserveAspectRatio="none">
-            <path className="clay-path" d="M 120 500 L 250 500" />
-            <path className="clay-path" d="M 550 500 L 700 500" />
-            <path className="clay-path" d="M 700 500 C 800 500, 820 180, 910 180" />
-            <path className="clay-path" d="M 700 500 L 910 500" />
-            <path className="clay-path" d="M 700 500 C 800 500, 820 820, 910 820" />
-            <path className="clay-path" d="M 1210 180 C 1300 180, 1320 500, 1400 500" />
-            <path className="clay-path" d="M 1210 500 L 1400 500" />
-            <path className="clay-path" d="M 1210 820 C 1300 820, 1320 500, 1400 500" />
-            <path className="clay-path" d="M 1400 500 L 1550 500" />
-            <path className="clay-path" d="M 1850 500 L 2200 500" />
-            <path className="clay-path" d="M 2500 500 L 2800 500" />
-            <path className="clay-path" d="M 3100 500 L 3260 500" />
+        <div className="clay-canvas" style={{ width: layout.width, height: layout.height }}>
+          <svg
+            className="clay-lines"
+            viewBox={`0 0 ${layout.width} ${layout.height}`}
+            preserveAspectRatio="none"
+          >
+            {layout.paths.map((d) => (
+              <path key={d} className="clay-path" d={d} />
+            ))}
           </svg>
 
-          <div className="clay-el clay-dot gs-reveal" style={at({ left: 120, top: 500 })} />
-          <div className="clay-el clay-pill gs-reveal" style={at({ left: 120, top: 400 })}>
+          <div className="clay-el clay-dot gs-reveal" style={at(layout.startDot)} />
+          <div className="clay-el clay-pill gs-reveal" style={at(layout.startPill)}>
             <UserRound size={16} /> You, on your phone
           </div>
 
           <Card
             id="step-caddy"
-            pos={{ left: 400, top: 500 }}
+            pos={layout.cards.caddy}
             accent="var(--clay-caddy)"
             step="01"
             chip="24/7"
             icon={<MessageCircle size={18} />}
             title="Say hi to Caddy"
-            sub="Type or talk — plain language, any hour"
+            sub="Type or talk, in plain words"
             image={journeyChat}
             imageAlt="Caddy assistant character chatting on a phone"
           >
             <Line>
-              <Sparkles size={15} /> “My tooth hurts on the left side”
+              <Sparkles size={15} /> “My tooth hurts on the left”
             </Line>
             <Line>
               <Sparkles size={15} /> “Do you take my insurance?”
             </Line>
             <div className="clay-stats">
-              <span>REPLIES IN 2s</span>
-              <span>VOICE + CHAT</span>
+              <span>Replies in 2s</span>
+              <span>Voice + chat</span>
             </div>
           </Card>
 
-          <div className="clay-el clay-dot gs-reveal" style={at({ left: 700, top: 500 })} />
+          {layout.midDots[0] && (
+            <div className="clay-el clay-dot gs-reveal" style={at(layout.midDots[0])} />
+          )}
 
           <Card
             id="step-answers"
-            pos={{ left: 1060, top: 180 }}
+            pos={layout.cards.answers}
             accent="var(--clay-care)"
             step="02"
-            chip="ASK"
+            chip="Ask"
             icon={<Sparkles size={18} />}
             title="Get real answers"
-            sub="Symptoms, prices, prep, directions"
+            sub="Symptoms, prices, what to bring"
             image={journeyChat}
             imageAlt="Caddy answering questions in chat"
           >
             <Line>
-              <MapPin size={15} /> What to bring, where to park
+              <MapPin size={15} /> Where to park, when to arrive
+            </Line>
+            <Line>
+              <Sparkles size={15} /> Clear prices before you book
             </Line>
             <div className="clay-stats">
-              <span>NO PHONE QUEUE</span>
-              <span>NO HOLD MUSIC</span>
+              <span>No phone queue</span>
+              <span>No hold music</span>
             </div>
           </Card>
 
           <Card
             id="step-doctor"
-            pos={{ left: 1060, top: 500 }}
+            pos={layout.cards.doctor}
             accent="var(--clay-care)"
-            step="02"
-            chip="MATCH"
+            step="03"
+            chip="Match"
             icon={<Stethoscope size={18} />}
             title="Find your doctor"
-            sub="Caddy matches the right specialist"
+            sub="Caddy picks the right specialist"
             image={journeyDoctor}
             imageAlt="A matched specialist doctor"
           >
@@ -393,43 +489,48 @@ export function ClinicJourney() {
               <Stethoscope size={15} /> Dr. Ellis · General · 4.8★
             </Line>
             <div className="clay-stats">
-              <span>12 DOCTORS</span>
-              <span>LIVE AVAILABILITY</span>
+              <span>12 doctors</span>
+              <span>Live availability</span>
             </div>
           </Card>
 
           <Card
             id="step-slot"
-            pos={{ left: 1060, top: 820 }}
+            pos={layout.cards.slot}
             accent="var(--clay-care)"
-            step="02"
-            chip="TIME"
+            step="04"
+            chip="Time"
             icon={<Clock3 size={18} />}
-            title="Pick a slot that fits"
-            sub="Real open times, not a callback promise"
+            title="Pick a time"
+            sub="Real open slots, not a callback"
             image={journeyBooked}
             imageAlt="Calendar with open appointment times"
           >
             <Line>
-              <Clock3 size={15} /> Today 4:20 PM · Tomorrow 9:00 AM
+              <Clock3 size={15} /> Today 4:20 PM
+            </Line>
+            <Line>
+              <Clock3 size={15} /> Tomorrow 9:00 AM
             </Line>
             <div className="clay-stats">
-              <span>REAL-TIME</span>
-              <span>FREE RESCHEDULE</span>
+              <span>Updated live</span>
+              <span>Free reschedule</span>
             </div>
           </Card>
 
-          <div className="clay-el clay-dot gs-reveal" style={at({ left: 1400, top: 500 })} />
+          {layout.midDots[1] && (
+            <div className="clay-el clay-dot gs-reveal" style={at(layout.midDots[1])} />
+          )}
 
           <Card
             id="step-booked"
-            pos={{ left: 1700, top: 500 }}
+            pos={layout.cards.booked}
             accent="var(--clay-time)"
-            step="03"
-            chip="30 SEC"
+            step="05"
+            chip="30 sec"
             icon={<CalendarCheck size={18} />}
             title="Booked. Done."
-            sub="Confirmation before you close the chat"
+            sub="Confirmed before you close the chat"
             image={journeyBooked}
             imageAlt="Confirmed booking on a calendar"
           >
@@ -440,20 +541,20 @@ export function ClinicJourney() {
               <Bell size={15} /> Reminder + calendar invite sent
             </Line>
             <div className="clay-stats">
-              <span>NO FORMS</span>
-              <span>NO CALLS</span>
+              <span>No forms</span>
+              <span>No calls</span>
             </div>
           </Card>
 
           <Card
             id="step-queue"
-            pos={{ left: 2350, top: 500 }}
+            pos={layout.cards.queue}
             accent="var(--clay-queue)"
-            step="04"
-            chip="LIVE"
+            step="06"
+            chip="Live"
             icon={<Timer size={18} />}
-            title="Watch the queue move"
-            sub="Your place updates in real time"
+            title="Watch the queue"
+            sub="Your turn updates in real time"
             image={journeyQueue}
             imageAlt="Live queue countdown on a phone"
           >
@@ -466,21 +567,21 @@ export function ClinicJourney() {
               <span>~8 min</span>
             </div>
             <div className="clay-queue-row clay-you">
-              <span>#14 · YOU</span>
+              <span>#14 · You</span>
               <span>~16 min</span>
             </div>
             <div className="clay-stats">
-              <span>LEAVE HOME AT 4:02</span>
-              <span>PING ON DELAY</span>
+              <span>Leave home at 4:02</span>
+              <span>Ping on delay</span>
             </div>
           </Card>
 
           <Card
             id="step-arrive"
-            pos={{ left: 2950, top: 500 }}
+            pos={layout.cards.arrive}
             accent="var(--clay-caddy)"
-            step="05"
-            chip="0 MIN WAIT"
+            step="07"
+            chip="0 min wait"
             icon={<Bell size={18} />}
             title="Walk in on time"
             sub="Arrive, sit down, get called"
@@ -490,19 +591,22 @@ export function ClinicJourney() {
             <Line>
               <Bell size={15} /> “Head over now — you’re next.”
             </Line>
+            <Line>
+              <Clock3 size={15} /> Average wait: 3 minutes
+            </Line>
             <div className="clay-stats">
-              <span>AVG WAIT 3 MIN</span>
-              <span>NO CROWDED LOBBY</span>
+              <span>No crowded lobby</span>
+              <span>Hours saved</span>
             </div>
           </Card>
 
-          <div className="clay-el clay-dot gs-reveal" style={at({ left: 3260, top: 500 })} />
-          <div className="clay-el clay-pill gs-reveal" style={at({ left: 3260, top: 400 })}>
+          <div className="clay-el clay-dot gs-reveal" style={at(layout.endDot)} />
+          <div className="clay-el clay-pill gs-reveal" style={at(layout.endPill)}>
             <Sparkles size={16} /> Hours saved, every visit
           </div>
         </div>
 
-        <div className="clay-hint">↓ Scroll or tap a step to trace your visit ↓</div>
+        <div className="clay-hint">↓ Keep scrolling to trace your visit ↓</div>
       </div>
     </div>
   );
