@@ -8,7 +8,7 @@ import { DoctorCarousel } from "@/components/caddy/DoctorCarousel";
 import { QueueTeaser } from "@/components/caddy/QueueTeaser";
 import { SiteFooter } from "@/components/caddy/SiteFooter";
 import { CallDoctorAnimation } from "@/components/caddy/CallDoctorAnimation";
-import { HowCaddyWorks } from "@/components/caddy/HowCaddyWorks";
+import { ClinicJourney } from "@/components/caddy/ClinicJourney";
 import { QueueToast } from "@/components/caddy/QueueToast";
 
 
@@ -135,10 +135,9 @@ function Home() {
         </section>
 
 
-        {/* HOW CADDY WORKS */}
-        <div className="pt-20">
-          <HowCaddyWorks />
-        </div>
+        {/* HOW CADDY WORKS — claymorphism journey */}
+        <ClinicJourney />
+
 
         {/* LIVE QUEUE TOAST PREVIEW */}
         <div className="pt-10">

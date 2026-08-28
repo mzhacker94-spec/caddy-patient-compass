@@ -319,3 +319,417 @@
     display: none;
   }
 }
+
+/* ============================================================
+   Clinic journey scene — claymorphism / neumorphic flow canvas
+   ============================================================ */
+
+.clay-scene {
+  --clay-bg: #e3e8ef;
+  --clay-light: #ffffff;
+  --clay-dark: #a9b6c8;
+  --clay-ink: #22303f;
+  --clay-muted: #62727f;
+  --clay-caddy: #6f5cf0;
+  --clay-care: #12b3a0;
+  --clay-time: #f08a3c;
+  --clay-queue: #e8547c;
+
+  background: var(--clay-bg);
+  color: var(--clay-ink);
+  border-radius: var(--radius-4xl);
+  overflow: hidden;
+  margin-top: 5rem;
+}
+
+.clay-viewport {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.clay-canvas {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 3400px;
+  height: 1000px;
+  will-change: transform;
+}
+
+.clay-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.clay-path {
+  stroke: var(--clay-ink);
+  stroke-width: 4;
+  fill: none;
+  stroke-linecap: round;
+  opacity: 0.35;
+}
+
+.clay-el {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: var(--clay-bg);
+  box-shadow:
+    12px 12px 24px var(--clay-dark),
+    -12px -12px 24px var(--clay-light);
+  z-index: 2;
+}
+
+.clay-dot {
+  width: 18px;
+  height: 18px;
+  background: var(--clay-ink);
+  border: 6px solid var(--clay-bg);
+  border-radius: 50%;
+  box-shadow:
+    4px 4px 10px var(--clay-dark),
+    -4px -4px 10px var(--clay-light);
+  z-index: 3;
+}
+
+.clay-pill {
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--clay-muted);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow:
+    6px 6px 14px var(--clay-dark),
+    -6px -6px 14px var(--clay-light);
+  z-index: 4;
+}
+
+.clay-card {
+  width: 300px;
+  border-radius: 34px;
+  border: 3px solid rgba(255, 255, 255, 0.55);
+  cursor: default;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  overflow: hidden;
+}
+
+.clay-card:hover {
+  transform: translate(-50%, -54%);
+  box-shadow:
+    20px 20px 40px var(--clay-dark),
+    -20px -20px 40px var(--clay-light);
+  z-index: 10;
+}
+
+.clay-card-head {
+  position: relative;
+  height: 168px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #fff;
+  overflow: hidden;
+}
+
+.clay-card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+  mix-blend-mode: luminosity;
+  pointer-events: none;
+}
+
+.clay-card-head::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 100% at 20% 0%, rgba(255, 255, 255, 0.35), transparent 60%);
+  pointer-events: none;
+}
+
+.clay-badge {
+  padding: 5px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.22);
+  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.25);
+}
+
+.clay-badge-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.clay-card-title {
+  position: relative;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.28);
+}
+
+.clay-card-sub {
+  position: relative;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.92;
+}
+
+.clay-card-body {
+  background: var(--clay-bg);
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.04);
+}
+
+.clay-line {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--clay-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clay-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--clay-muted);
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.clay-hint {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  color: var(--clay-muted);
+  background: var(--clay-bg);
+  padding: 12px 22px;
+  border-radius: 999px;
+  z-index: 60;
+  pointer-events: none;
+  box-shadow:
+    6px 6px 14px var(--clay-dark),
+    -6px -6px 14px var(--clay-light);
+  animation: clay-bounce 2s infinite ease-in-out;
+}
+
+@keyframes clay-bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -12px); }
+}
+
+.clay-title-block {
+  position: absolute;
+  top: 44px;
+  left: 48px;
+  z-index: 50;
+  max-width: 420px;
+}
+
+.clay-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 6px;
+  width: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--clay-caddy), var(--clay-care), var(--clay-time), var(--clay-queue));
+  z-index: 70;
+}
+
+.clay-queue-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--clay-muted);
+  background: var(--clay-bg);
+  border-radius: 14px;
+  padding: 8px 12px;
+  box-shadow:
+    inset 3px 3px 6px var(--clay-dark),
+    inset -3px -3px 6px var(--clay-light);
+}
+
+.clay-you {
+  color: var(--clay-ink);
+  box-shadow:
+    4px 4px 10px var(--clay-dark),
+    -4px -4px 10px var(--clay-light);
+}
+
+/* ---- Interactive step prompts ---- */
+
+.clay-steps {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 65;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(92vw, 1100px);
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: var(--clay-bg);
+  box-shadow:
+    8px 8px 18px var(--clay-dark),
+    -8px -8px 18px var(--clay-light);
+}
+
+.clay-step-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0 2px;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.clay-step-list::-webkit-scrollbar { display: none; }
+
+.clay-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--clay-muted);
+  background: var(--clay-bg);
+  box-shadow:
+    4px 4px 10px var(--clay-dark),
+    -4px -4px 10px var(--clay-light);
+  transition: transform 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.clay-step:hover { transform: translateY(-2px); color: var(--clay-ink); }
+
+.clay-step.is-active {
+  color: #fff;
+  background: var(--clay-caddy);
+  box-shadow:
+    inset 3px 3px 7px rgba(0, 0, 0, 0.25),
+    inset -3px -3px 7px rgba(255, 255, 255, 0.25);
+}
+
+.clay-step-num { opacity: 0.75; font-size: 11px; }
+
+.clay-step-arrow {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  color: var(--clay-ink);
+  background: var(--clay-bg);
+  box-shadow:
+    4px 4px 10px var(--clay-dark),
+    -4px -4px 10px var(--clay-light);
+  cursor: pointer;
+}
+
+.clay-step-arrow:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ---- Stacked layout: small screens and reduced motion ---- */
+
+@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+  .clay-viewport {
+    height: auto;
+    overflow: visible;
+    padding: 24px 16px 96px;
+  }
+
+  .clay-canvas {
+    position: static;
+    transform: none;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .clay-lines,
+  .clay-dot,
+  .clay-hint {
+    display: none;
+  }
+
+  .clay-el {
+    position: static;
+    transform: none;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .clay-card:hover { transform: none; }
+
+  .clay-title-block {
+    position: static;
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .clay-title-block h2 { font-size: 28px; }
+
+  .clay-steps {
+    position: sticky;
+    bottom: 12px;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 16px auto 20px;
+  }
+
+  .clay-progress { position: fixed; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clay-hint { animation: none; }
+  .clay-step,
+  .clay-card { transition: none; }
+}
